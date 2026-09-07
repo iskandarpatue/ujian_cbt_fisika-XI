@@ -2,135 +2,536 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Portal CBT Ujian</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Portal Ujian CBT Informatika - Terproteksi</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
-    body, html { width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI', sans-serif; background-color: #121217; color: #fff; }
-    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+    }
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: #0f172a;
+      color: #f8fafc;
+    }
+
     /* Layar Mulai */
-    #start-screen { display: flex; align-items: center; justify-content: center; height: 100vh; padding: 20px; }
-    .card { background: #1e1e26; padding: 32px; border-radius: 12px; max-width: 450px; width: 100%; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-    .logo-img { max-width: 90px; height: auto; margin-bottom: 16px; }
-    .card h2 { font-size: 20px; margin-bottom: 6px; color: #4f8cff; }
-    .card h3 { font-size: 15px; font-weight: normal; color: #bbb; margin-bottom: 18px; }
-    .card p { font-size: 13px; color: #8a8a9e; margin-bottom: 24px; line-height: 1.5; }
+    #start-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 24px 16px;
+      overflow-y: auto;
+    }
+    .card {
+      background: #1e293b;
+      padding: 28px 20px 20px 20px;
+      border-radius: 16px;
+      max-width: 460px;
+      width: 100%;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+      border: 1px solid #334155;
+      text-align: center;
+    }
+    .logo-container {
+      margin-bottom: 12px;
+    }
+    .logo-img {
+      max-width: 80px;
+      max-height: 80px;
+      object-fit: contain;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(59, 130, 246, 0.15);
+      color: #60a5fa;
+      padding: 4px 14px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      letter-spacing: 0.5px;
+    }
+    .card h2 {
+      font-size: 20px;
+      margin-bottom: 6px;
+      color: #ffffff;
+    }
+    .card h3 {
+      font-size: 14px;
+      color: #38bdf8;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    .card p {
+      font-size: 13px;
+      color: #94a3b8;
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+
+    /* Kotak Tata Tertib */
+    .rules-box {
+      background: #0f172a;
+      border-left: 3px solid #f59e0b;
+      padding: 12px 14px;
+      border-radius: 6px;
+      text-align: left;
+      font-size: 12px;
+      color: #cbd5e1;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+    .rules-box ul {
+      padding-left: 18px;
+      margin-top: 6px;
+    }
+
+    .btn {
+      background: #2563eb;
+      color: #ffffff;
+      border: none;
+      padding: 13px;
+      font-size: 15px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.2s;
+    }
+    .btn:hover {
+      background: #1d4ed8;
+    }
+
+    /* Footer Credit */
+    .footer-credit {
+      margin-top: 18px;
+      font-size: 11px;
+      color: #64748b;
+      letter-spacing: 0.5px;
+      border-top: 1px solid #334155;
+      padding-top: 12px;
+    }
+    .footer-credit strong {
+      color: #94a3b8;
+      font-weight: 600;
+    }
+
+    /* Kontainer Ujian */
+    #exam-container {
+      display: none;
+      width: 100vw;
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      background: #ffffff;
+      z-index: 10;
+      flex-direction: column;
+    }
     
-    .btn { background: #4f8cff; color: #fff; border: none; padding: 12px; font-size: 15px; font-weight: 600; border-radius: 6px; cursor: pointer; width: 100%; }
-    .btn:hover { background: #3b74db; }
-    
-    /* Iframe Ujian */
-    #exam-container { display: none; width: 100vw; height: 100vh; }
-    #exam-frame { width: 100%; height: 100%; border: none; }
-    
-    /* Layar Terkunci */
-    #lock-modal { display: none; position: fixed; inset: 0; background: rgba(5,5,8,0.97); z-index: 9999; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; }
-    .lock-card { background: #261619; border: 1px solid #ff4d4f; padding: 28px; border-radius: 10px; max-width: 380px; width: 100%; }
-    .lock-card h3 { color: #ff4d4f; margin-bottom: 8px; }
-    .lock-card p { font-size: 13px; color: #ccc; margin-bottom: 16px; }
-    .token-input { width: 100%; padding: 10px; font-size: 16px; text-align: center; letter-spacing: 3px; text-transform: uppercase; border-radius: 6px; border: 1px solid #555; background: #111; color: #fff; margin-bottom: 12px; }
-    .btn-danger { background: #ff4d4f; }
-    .error-msg { color: #ff7875; font-size: 12px; margin-top: 8px; display: none; }
+    /* Top Bar Ujian */
+    .exam-topbar {
+      height: 48px;
+      background: #0f172a;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      border-bottom: 1px solid #334155;
+      z-index: 20;
+    }
+    .exam-topbar-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #93c5fd;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .btn-exit {
+      background: #dc2626;
+      color: #ffffff;
+      border: none;
+      padding: 6px 12px;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .btn-exit:hover {
+      background: #b91c1c;
+    }
+
+    #exam-frame {
+      width: 100%;
+      height: calc(100vh - 48px);
+      border: none;
+    }
+
+    /* Modal Dialog Umum */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.98);
+      z-index: 99999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      text-align: center;
+    }
+    .modal-card {
+      background: #1e293b;
+      padding: 28px 20px;
+      border-radius: 16px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+    }
+    .modal-card-danger {
+      border: 1px solid #ef4444;
+    }
+    .modal-card h3 {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+    .modal-card p {
+      font-size: 13px;
+      color: #cbd5e1;
+      line-height: 1.5;
+      margin-bottom: 18px;
+    }
+    .token-input {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      text-align: center;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      border-radius: 8px;
+      border: 1px solid #475569;
+      background: #0f172a;
+      color: #ffffff;
+      margin-bottom: 12px;
+      outline: none;
+      user-select: text;
+      -webkit-user-select: text;
+    }
+    .token-input:focus {
+      border-color: #ef4444;
+    }
+    .btn-danger {
+      background: #ef4444;
+    }
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+    .btn-secondary {
+      background: #475569;
+      color: #fff;
+      margin-top: 8px;
+    }
+    .btn-secondary:hover {
+      background: #334155;
+    }
+    .error-msg {
+      color: #fca5a5;
+      font-size: 12px;
+      margin-top: 10px;
+      display: none;
+    }
+
+    /* Layar Diskualifikasi / Nilai 0 */
+    #disqualified-screen {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: #0b0f19;
+      z-index: 100000;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+    }
+    .score-badge {
+      font-size: 48px;
+      font-weight: 800;
+      color: #ef4444;
+      margin: 16px 0;
+    }
   </style>
 </head>
 <body>
 
-  <!-- Layar Awal -->
+  <!-- 1. Layar Mulai -->
   <div id="start-screen">
     <div class="card">
-      <img id="school-logo" class="logo-img" src="" alt="Logo" />
-      <h2 id="school-name">Memuat...</h2>
-      <h3 id="exam-title"></h3>
-      <p id="exam-desc"></p>
-      <button class="btn" onclick="startExam()">Mulai Ujian</button>
+      <div class="logo-container">
+        <img 
+          id="app-logo" 
+          class="logo-img" 
+          src="assets/logo.png" 
+          alt="Logo Sekolah" 
+          onerror="handleLogoError(this)" 
+        />
+      </div>
+
+      <div class="badge">SISTEM UJIAN CBT TERPROTEKSI</div>
+      <h2>ASESMEN SUMATIF</h2>
+      <h3>Mata Pelajaran: Informatika</h3>
+      <p>Selamat mengerjakan. Pastikan koneksi internet stabil dan baterai perangkat mencukupi.</p>
+
+      <div class="rules-box">
+        <strong>Peraturan Ujian:</strong>
+        <ul>
+          <li>Layar ponsel otomatis terkunci aktif (dilarang dimatikan).</li>
+          <li>Dilarang berpindah aplikasi, membuka floating window, atau tab baru.</li>
+          <li>Jika keluar, lembar soal terkunci dan harus dibuka oleh pengawas.</li>
+          <li><strong>Menekan tombol keluar paksa akan membatalkan ujian dan nilai Anda adalah 0.</strong></li>
+        </ul>
+      </div>
+
+      <button class="btn" onclick="startExam()">Mulai Kerjakan Ujian</button>
+
+      <!-- Footer Credit -->
+      <div class="footer-credit">
+        By. <strong>Pk Guru Iskandar</strong> & <strong>Gemini AI</strong>
+      </div>
     </div>
   </div>
 
-  <!-- Kontainer Ujian -->
+  <!-- 2. Kontainer Ujian Google Form -->
   <div id="exam-container">
+    <div class="exam-topbar">
+      <span class="exam-topbar-title">📝 Ujian Informatika - Sedang Berlangsung</span>
+      <button class="btn-exit" onclick="openExitModal()">Keluar Ujian</button>
+    </div>
     <iframe id="exam-frame" src=""></iframe>
   </div>
 
-  <!-- Modal Terkunci -->
-  <div id="lock-modal">
-    <div class="lock-card">
-      <h3>⚠️ Ujian Terkunci</h3>
-      <p id="violation-text">Terdeteksi keluar dari layar ujian.</p>
-      <input type="text" id="token-input" class="token-input" placeholder="TOKEN PENGAWAS" autocomplete="off" />
+  <!-- 3. Modal Terkunci (Jika Berpindah Tab/Aplikasi) -->
+  <div id="lock-modal" class="modal-overlay">
+    <div class="modal-card modal-card-danger">
+      <h3 style="color: #f87171;">⚠️ Ujian Terkunci!</h3>
+      <p id="violation-reason">Terdeteksi berpindah aplikasi atau keluar dari ruang ujian.</p>
+      <input 
+        type="text" 
+        id="supervisor-token" 
+        class="token-input" 
+        placeholder="TOKEN PENGAWAS" 
+        autocomplete="off"
+        onkeydown="if(event.key==='Enter') unlockExam();"
+      />
       <button class="btn btn-danger" onclick="unlockExam()">Buka Kunci</button>
-      <div id="token-error" class="error-msg">Token salah! Hubungi pengawas.</div>
+      <div id="token-error" class="error-msg">Token salah! Hubungi pengawas ruangan.</div>
     </div>
   </div>
 
-  <!-- Hubungkan File Config -->
-  <script src="config.js"></script>
+  <!-- 4. Modal Konfirmasi Keluar (Peringatan Nilai 0) -->
+  <div id="exit-modal" class="modal-overlay">
+    <div class="modal-card modal-card-danger">
+      <h3 style="color: #f87171;">⚠️ Konfirmasi Keluar Ujian</h3>
+      <p style="color: #fca5a5; font-weight: bold; background: rgba(239, 68, 68, 0.15); padding: 12px; border-radius: 8px;">
+        PERINGATAN: Jika Anda memilih menu keluar sekarang, lembar jawaban Anda tidak diproses dan Nilai Anda adalah 0!
+      </p>
+      <p>Apakah Anda yakin ingin mengakhiri sesi ujian ini?</p>
+      <button class="btn btn-danger" onclick="confirmExit()">Ya, Keluar Ujian (Nilai 0)</button>
+      <button class="btn btn-secondary" onclick="closeExitModal()">Batal (Lanjutkan Ujian)</button>
+    </div>
+  </div>
+
+  <!-- 5. Layar Hasil Diskualifikasi / Keluar (Nilai 0) -->
+  <div id="disqualified-screen">
+    <div class="modal-card modal-card-danger">
+      <h3 style="color: #ef4444;">UJIAN TELAH DIAKHIRI</h3>
+      <p>Anda telah memilih untuk keluar dari sesi ujian sebelum waktu berakhir.</p>
+      <div class="score-badge">NILAI: 0</div>
+      <p style="font-size: 12px; color: #94a3b8;">Status: Diskualifikasi / Keluar Mandiri. Silakan hubungi proktor/pengawas ruang Anda.</p>
+      
+      <div class="footer-credit" style="margin-top: 24px;">
+        By. <strong>Pk Guru Iskandar</strong> & <strong>Gemini AI</strong>
+      </div>
+    </div>
+  </div>
 
   <script>
-    // Inisialisasi Tampilan dari Config
-    document.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("school-logo").src = CONFIG.logoUrl;
-      document.getElementById("school-name").textContent = CONFIG.schoolName;
-      document.getElementById("exam-title").textContent = CONFIG.examTitle;
-      document.getElementById("exam-desc").textContent = CONFIG.instructions;
-    });
+    // =========================================================================
+    // LINK GOOGLE FORM RESMI & TOKEN PENGAWAS
+    // =========================================================================
+    const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSd9DoQwtOP9pmMNrXFaSUBYIGZkIvHxQkEPrQVM5_JYlTugNg/viewform?embedded=true";
+    const SUPERVISOR_TOKEN = "GURU2026";
+    // =========================================================================
 
     let isExamRunning = false;
+    let isLocked = false;
+    let unlockCooldown = false;
+    let wakeLockSentinel = null;
 
-    function startExam() {
-      const el = document.documentElement;
-      const fs = el.requestFullscreen || el.webkitRequestFullscreen;
-      if (fs) fs.call(el).catch(() => {});
+    const startScreen = document.getElementById("start-screen");
+    const examContainer = document.getElementById("exam-container");
+    const examFrame = document.getElementById("exam-frame");
+    const lockModal = document.getElementById("lock-modal");
+    const exitModal = document.getElementById("exit-modal");
+    const disqualifiedScreen = document.getElementById("disqualified-screen");
+    const tokenInput = document.getElementById("supervisor-token");
+    const tokenError = document.getElementById("token-error");
+    const violationReason = document.getElementById("violation-reason");
 
-      document.getElementById("start-screen").style.display = "none";
-      document.getElementById("exam-container").style.display = "block";
-      document.getElementById("exam-frame").src = CONFIG.examUrl;
-      isExamRunning = true;
-    }
-
-    function lockExam(reason) {
-      if (!isExamRunning) return;
-      document.getElementById("violation-text").textContent = reason;
-      document.getElementById("lock-modal").style.display = "flex";
-      document.getElementById("token-input").value = "";
-      document.getElementById("token-error").style.display = "none";
-    }
-
-    function unlockExam() {
-      const entered = document.getElementById("token-input").value.trim().toUpperCase();
-      if (entered === CONFIG.supervisorToken) {
-        document.getElementById("lock-modal").style.display = "none";
-        const el = document.documentElement;
-        if (!document.fullscreenElement && (el.requestFullscreen || el.webkitRequestFullscreen)) {
-          (el.requestFullscreen || el.webkitRequestFullscreen).call(el);
-        }
+    // Tangani gambar logo jika file belum ada
+    function handleLogoError(img) {
+      if (!img.dataset.retried) {
+        img.dataset.retried = "true";
+        img.src = "assets/logo.jpg";
       } else {
-        document.getElementById("token-error").style.display = "block";
+        img.style.display = "none";
       }
     }
 
-    // Deteksi Pelanggaran (Tab/Aplikasi/Fullscreen)
+    // 1. Kunci Layar Smartphone (Screen Wake Lock API - Android & iPhone)
+    async function enableScreenWakeLock() {
+      if ('wakeLock' in navigator) {
+        try {
+          wakeLockSentinel = await navigator.wakeLock.request('screen');
+        } catch (err) {}
+      }
+    }
+
+    // 2. Memulai Ujian
+    function startExam() {
+      const el = document.documentElement;
+      const requestFS = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
+
+      if (requestFS) {
+        requestFS.call(el).catch(() => {});
+      }
+
+      enableScreenWakeLock();
+
+      startScreen.style.display = "none";
+      examContainer.style.display = "flex";
+      examFrame.src = FORM_URL;
+
+      setTimeout(() => {
+        isExamRunning = true;
+      }, 1000);
+    }
+
+    // 3. Mengunci Ujian Saat Terdeteksi Pelanggaran
+    function triggerLock(reason) {
+      if (!isExamRunning || isLocked || unlockCooldown) return;
+
+      isLocked = true;
+      violationReason.textContent = reason;
+      lockModal.style.display = "flex";
+      tokenInput.value = "";
+      tokenError.style.display = "none";
+
+      setTimeout(() => {
+        tokenInput.focus();
+      }, 150);
+    }
+
+    // 4. Membuka Kunci Ujian dengan Token
+    function unlockExam() {
+      const entered = tokenInput.value.replace(/\s+/g, '').toUpperCase();
+      const actual = SUPERVISOR_TOKEN.replace(/\s+/g, '').toUpperCase();
+
+      if (entered === actual) {
+        unlockCooldown = true;
+        isLocked = false;
+        
+        lockModal.style.display = "none";
+        tokenError.style.display = "none";
+        tokenInput.value = "";
+
+        enableScreenWakeLock();
+
+        const el = document.documentElement;
+        if (!document.fullscreenElement && (el.requestFullscreen || el.webkitRequestFullscreen)) {
+          (el.requestFullscreen || el.webkitRequestFullscreen).call(el).catch(() => {});
+        }
+
+        setTimeout(() => {
+          unlockCooldown = false;
+        }, 3000);
+      } else {
+        tokenError.style.display = "block";
+      }
+    }
+
+    // 5. Fitur Menu Keluar (Nilai 0)
+    function openExitModal() {
+      exitModal.style.display = "flex";
+    }
+
+    function closeExitModal() {
+      exitModal.style.display = "none";
+    }
+
+    function confirmExit() {
+      isExamRunning = false;
+      exitModal.style.display = "none";
+      examContainer.style.display = "none";
+      examFrame.src = ""; // Putus koneksi Google Form seketika
+
+      if (wakeLockSentinel) {
+        wakeLockSentinel.release().catch(() => {});
+      }
+
+      disqualifiedScreen.style.display = "flex";
+    }
+
+    // 6. Deteksi Navigasi / Pindah Aplikasi (Android & iPhone)
     document.addEventListener("visibilitychange", () => {
       if (document.visibilityState === "hidden" && isExamRunning) {
-        lockExam("Terdeteksi berpindah tab atau meminimalkan aplikasi.");
+        triggerLock("Terdeteksi berpindah aplikasi, menutup browser, atau membuka notifikasi.");
+      } else if (document.visibilityState === "visible" && isExamRunning) {
+        enableScreenWakeLock();
       }
     });
 
-    window.addEventListener("blur", () => {
-      setTimeout(() => {
-        if (document.activeElement !== document.getElementById("exam-frame") && isExamRunning) {
-          lockExam("Terdeteksi membuka jendela atau notifikasi lain.");
-        }
-      }, 400);
+    window.addEventListener("pagehide", () => {
+      if (isExamRunning) {
+        triggerLock("Terdeteksi keluar dari browser.");
+      }
     });
 
     document.addEventListener("fullscreenchange", () => {
-      if (!document.fullscreenElement && isExamRunning) {
-        lockExam("Terdeteksi keluar dari layar penuh.");
+      if (!document.fullscreenElement && isExamRunning && !unlockCooldown) {
+        triggerLock("Terdeteksi keluar dari mode layar penuh.");
       }
     });
 
-    // Blokir klik kanan & inspect element
-    document.addEventListener("contextmenu", e => e.preventDefault());
+    window.onbeforeunload = function() {
+      if (isExamRunning) {
+        return "Ujian sedang berlangsung! Keluar akan mengunci lembar kerja.";
+      }
+    };
+
+    // Blokir Klik Kanan & Shortcut DevTools
+    document.addEventListener("contextmenu", (e) => e.preventDefault());
+    document.addEventListener("keydown", (e) => {
+      if (
+        e.key === "F12" ||
+        (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J" || e.key === "C")) ||
+        (e.ctrlKey && (e.key === "u" || e.key === "U"))
+      ) {
+        e.preventDefault();
+      }
+    });
   </script>
 </body>
 </html>
